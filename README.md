@@ -1,5 +1,10 @@
 # Design and Development Challenge – Bowling Score
 
+##Instructions to Run
+* Install node
+* Run ```node main.js < testCase1``` for each test case file
+* Run test suite by opening ```SpecRunner.html```
+
 ## Requirement
 Create a program which, given a valid sequence of rolls for one line of American Ten-Pin Bowling, produces the total score for the game. Fork this repository, build your program in the language of your choice, then submit a pull request with your code.
 
