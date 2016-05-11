@@ -6,12 +6,14 @@ describe('bowlingGame', function() {
 
 	describe('play', function() {
 		it('should process the game', function() {
-			spyOn(bowling, 'processGame');
+			spyOn(bowling, 'processGame').and.returnValue([1, 2, 3]);
+			spyOn(bowling, 'processFrames');
 			var input = 'X81';
 
 			bowling.play(input);
 
 			expect(bowling.processGame).toHaveBeenCalledWith(input);
+			expect(bowling.processFrames).toHaveBeenCalledWith([1, 2, 3]);
 		});
 	});
 
@@ -21,7 +23,7 @@ describe('bowlingGame', function() {
 			var strikeFrame = bowling.processGame(input)[0];
 
 			expect(strikeFrame.getA()).toBe(10);
-			expect(strikeFrame.getB()).toBe(0);
+			expect(strikeFrame.getB()).toBe(-1);
 			expect(strikeFrame.getLookahead()).toBe(2);
 		});
 
@@ -50,6 +52,44 @@ describe('bowlingGame', function() {
 
 			expect(bowling.processGame(input).length).toBe(4);
 		});
+	});
+
+	describe('processFrames', function() {
+		it('should process strike lookahead', function() {
+			var input = 'X12----------------';
+			var frames = bowling.processGame(input);
+
+			expect(bowling.processFrames(frames)).toBe(16);
+		});
+
+		it('should process multiple strikes', function() {
+			var input = 'XXXXXXXXXXXX';
+			var frames = bowling.processGame(input);
+
+			expect(bowling.processFrames(frames)).toBe(300);
+		});
+
+		it('should process game with no strikes or spares', function() {
+			var input = '9-9-9-9-9-9-9-9-9-9-';
+			var frames = bowling.processGame(input);
+
+			expect(bowling.processFrames(frames)).toBe(90);
+		});
+
+		it('should process game with only spares', function() {
+			var input = '5/5/5/5/5/5/5/5/5/5/5';
+			var frames = bowling.processGame(input);
+
+			expect(bowling.processFrames(frames)).toBe(150);
+		});
+
+		it('should process game with a mix', function() {
+			var input = 'X7/9-X-88/-6XXX81';
+			var frames = bowling.processGame(input);
+
+			expect(bowling.processFrames(frames)).toBe(167);
+		});
+
 	});
 });
 
@@ -133,6 +173,26 @@ describe('frame', function() {
 
 			expect(testFrame.getB()).toBe(5);
 			expect(testFrame.getLookahead()).toBe(0);
+		});
+	});
+
+	describe('getSubtotal', function() {
+		it('should return subtotal excluding of a and b', function() {
+			testFrame = bowling.createFrame(5, 3);
+
+			expect(testFrame.getSubtotal()).toBe(8);
+		});
+
+		it('should return subtotal excluding negative values - a', function() {
+			testFrame = bowling.createFrame(-1, 1);
+
+			expect(testFrame.getSubtotal()).toBe(1);
+		});
+
+		it('should return subtotal excluding negative values - b', function() {
+			testFrame = bowling.createFrame(1, -1);
+
+			expect(testFrame.getSubtotal()).toBe(1);
 		});
 	});
 });
