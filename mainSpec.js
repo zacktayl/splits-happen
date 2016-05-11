@@ -62,6 +62,13 @@ describe('bowlingGame', function() {
 			expect(bowling.processFrames(frames)).toBe(16);
 		});
 
+		it('should process spare lookahead', function() {
+			var input = '1/12----------------';
+			var frames = bowling.processGame(input);
+
+			expect(bowling.processFrames(frames)).toBe(14);
+		});
+
 		it('should process multiple strikes', function() {
 			var input = 'XXXXXXXXXXXX';
 			var frames = bowling.processGame(input);
@@ -88,6 +95,41 @@ describe('bowlingGame', function() {
 			var frames = bowling.processGame(input);
 
 			expect(bowling.processFrames(frames)).toBe(167);
+		});
+
+		it('should process game of a horrible bowler', function() {
+			var input = '--------------------';
+			var frames = bowling.processGame(input);
+
+			expect(bowling.processFrames(frames)).toBe(0);
+		});
+
+		it('should process horrible bowler who gets better at the end', function() {
+			var input = '--------------XXXXX';
+			var frames = bowling.processGame(input);
+
+			expect(bowling.processFrames(frames)).toBe(90);
+		});
+
+		it('should process unlucky bowler who gets worse at the end', function() {
+			var input = 'XXXXX--------------';
+			var frames = bowling.processGame(input);
+
+			expect(bowling.processFrames(frames)).toBe(120);
+		});
+
+		it('should process horrible bowler who gets better over time', function() {
+			var input = '--12--3/22----XXXXX';
+			var frames = bowling.processGame(input);
+
+			expect(bowling.processFrames(frames)).toBe(109);
+		});
+
+		it('should process unlucky bowler who gets worse over time', function() {
+			var input = 'XXXXX--5--7-91/9';
+			var frames = bowling.processGame(input);
+
+			expect(bowling.processFrames(frames)).toBe(160);
 		});
 
 	});
