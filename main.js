@@ -95,24 +95,21 @@ function bowlingGame() {
 	bowling.processFrames = function(frames) {
 		return frames.reduce(function(total, current, index, array) {
 			var lookaheadTotal = 0;
-			if(index < 10) {
-				if(current.canLookahead()) {
-					array.slice(index + 1).every(function(currentLook) { // Total lookahead
-						if(currentLook.getA() >= 0 && current.canLookahead()) {
-							lookaheadTotal += currentLook.getA();
-							current.decrementLookahead();
-						}
+			if(index < 10 && current.canLookahead()) {
+				array.slice(index + 1).every(function(currentLook) {
+					if(current.canLookahead() && currentLook.getA() >= 0) {
+						lookaheadTotal += currentLook.getA();
+						current.decrementLookahead();
+					}
 
-						if(currentLook.getB() >= 0 && current.canLookahead()) {
-							lookaheadTotal += currentLook.getB();
-							current.decrementLookahead();
-						}
-						return current.canLookahead();
-					});
-				}
-				total += current.getSubtotal() + lookaheadTotal;
+					if(current.canLookahead() && currentLook.getB() >= 0) {
+						lookaheadTotal += currentLook.getB();
+						current.decrementLookahead();
+					}
+					return current.canLookahead();
+				});
 			}
-
+			total += lookaheadTotal + (index < 10 ? current.getSubtotal() : 0);
 			return total;
 		}, 0);
 	};
